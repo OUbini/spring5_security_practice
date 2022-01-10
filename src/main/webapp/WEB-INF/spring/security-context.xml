@@ -7,12 +7,27 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<http>
-
-		<form-login/>
-
+		<intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />
+		<intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" />
+		<form-login login-page="/login/loginForm"
+              default-target-url="/"
+              authentication-failure-url="/login/loginForm?error"
+              username-parameter="username"
+              password-parameter="pw" />
+		<!-- 403 에러 처리 -->
+		<access-denied-handler error-page="/security/accessError"/>
 	</http>
 
 	<authentication-manager>
+		
+     <authentication-provider> 
+       <user-service> 
+         <user name="member" password="{noop}member" authorities="ROLE_MEMBER" /> 
+		 <user name="admin" password="{noop}admin" authorities="ROLE_MEMBER,ROLE_ADMIN" />
+	   </user-service> 
+     </authentication-provider>
+
 	</authentication-manager>
 
 
